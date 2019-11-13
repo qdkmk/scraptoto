@@ -1,5 +1,5 @@
 <template>
-<div class="hello">
+<div class="container">
   <div class="targetPagesListWrapper">
     <ul v-for="targetPage in targetPages" :key="targetPage.targetPageName">
       <li class="targetPageList" v-on:click="targetPage.active = !targetPage.active" v-bind:class="{ active: targetPage.active }">
@@ -74,7 +74,6 @@ export default {
               t.items = pageitems
             });
         }
-
       }
     },
     addPage() {
