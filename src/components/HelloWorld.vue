@@ -8,13 +8,13 @@
     </ul>
     <button class="targetPageListAdd" v-on:click="addPageModal = !addPageModal ">+</button>
   </div>
-
   <div v-if="addPageModal" class="addPage">
     <form class="add-form" @submit.prevent="addPage">
       <input class="input" type="text" v-model="addPageModalTmp" placeholder="ページ名">
-      <button class="submit" type="submit">確定</button>
+      <button class="submit" type="submit">Add</button>
     </form>
   </div>
+
   
   <form name="search" class="search-form" @submit.prevent="request">
     <input class="input" type="text" v-model="boxword" placeholder="検索ワードを入力してください。">
@@ -38,21 +38,22 @@ export default {
   },
   data: function() {
     return {
-      targetPages: [{
-        targetPageName: "marshmallow-rm",
-        active: true,
-        items: {}
-      }, {
-        targetPageName: "pwatest",
-        active: true,
-        items: {}
-      }],
+      targetPages: [],
       boxword: "",
       addPageModal: false,
       addPageModalTmp: "",
     }
   },
   computed: {},
+  created(){
+    //setTargetPages
+    if(localStorage.getItem("targetPages")){
+      let localdata = JSON.parse(localStorage.getItem("targetPages"))
+      for (let l of localdata){
+        this.targetPages.push(l)
+      }
+    }
+  },
   methods: {
     request() {
       document.activeElement.blur()
@@ -77,12 +78,16 @@ export default {
       }
     },
     addPage() {
-      this.targetPages.push({
-        targetPageName: this.addPageModalTmp,
-        active: true,
-        items: {}
-      })
-      this.addPageModal = !this.addPageModal
+      if(this.addPageModalTmp!=""){
+        this.targetPages.push({
+          targetPageName: this.addPageModalTmp,
+          active: true,
+          items: {}
+        })
+        this.addPageModal = !this.addPageModal
+        this.addPageModalTmp=""
+        localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
+      }
     },
   }
 }
