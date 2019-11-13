@@ -7,12 +7,19 @@
       </li>
     </ul>
     <button class="targetPageListAdd" v-on:click="addPageModalToggle">+</button>
+    <button class="targetPageListDelete" v-on:click="deletePageModalToggle">-</button>
   </div>
   <div v-show="addPageModal" class="addPage">
     <form class="add-form" @submit.prevent="addPage">
-      <input id="addPageInput" class="input" type="text" v-model="addPageModalTmp" placeholder="ページ名">
+      <input id="addPageInput" class="input" type="text" v-model="addPageModalTmp" placeholder="プロジェクトを追加">
       <button class="submit" type="submit">Add</button>
     </form>
+  </div>
+  
+  <div v-show="deletePageModal" class="targetPagesListWrapper">
+    <ul  v-for="targetPage in targetPages" :key="targetPage.targetPageName">
+        <li class="DeletePageList" v-on:click="deletePage(targetPage.targetPageName)" >削除：{{targetPage.targetPageName}}</li>
+    </ul>
   </div>
 
 
@@ -41,6 +48,7 @@ export default {
       targetPages: [],
       boxword: "",
       addPageModal: false,
+      deletePageModal:false,
       addPageModalTmp: "",
     }
   },
@@ -86,9 +94,18 @@ export default {
       })
       promise.then(() => {
         if (this.addPageModal) {
+          this.deletePageModal=false
           document.getElementById("addPageInput").focus()
         }
       })
+    },
+    deletePageModalToggle(){
+      if(this.deletePageModal){
+        this.deletePageModal=false
+      }else{
+        this.deletePageModal=true
+        this.addPageModal=false
+      }
     },
     addPage() {
       if (this.addPageModalTmp != "") {
@@ -102,6 +119,14 @@ export default {
         localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
       }
     },
+    deletePage(pageName){
+      this.targetPages.some((element,index)=>{
+        if(element.targetPageName==pageName){
+          this.targetPages.splice(index,1)
+        }
+      })
+      localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
+    }
   }
 }
 </script>
@@ -211,9 +236,29 @@ a {
   background-color: #42b983;
   color: #fff;
   border-radius: 3px;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   margin-top: 0.1rem;
   margin-bottom: 0.1rem;
+}
+.targetPageListDelete{
+  background-color: #919191;
+  color: #fff;
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+}
+.DeletePageList{
+  background-color: #b94242;
+  color: #fff;
+  border-radius: 3px;
+  padding: 0.5rem;
+  margin: 0.1rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .pageWrapper {}
