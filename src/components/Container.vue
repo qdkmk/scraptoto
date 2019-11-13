@@ -6,11 +6,11 @@
         {{ targetPage.targetPageName }}
       </li>
     </ul>
-    <button class="targetPageListAdd" v-on:click="addPageModal = !addPageModal ">+</button>
+    <button class="targetPageListAdd" v-on:click="addPageModalToggle">+</button>
   </div>
-  <div v-if="addPageModal" class="addPage">
+  <div v-show="addPageModal" class="addPage">
     <form class="add-form" @submit.prevent="addPage">
-      <input class="input" type="text" v-model="addPageModalTmp" placeholder="ページ名">
+      <input id="addPageInput" class="input" type="text" v-model="addPageModalTmp" placeholder="ページ名">
       <button class="submit" type="submit">Add</button>
     </form>
   </div>
@@ -78,6 +78,15 @@ export default {
             });
         }
       }
+    },
+    addPageModalToggle(){
+      let promise = new Promise((resolve) => { // #1
+        this.addPageModal = !this.addPageModal
+        resolve()
+      })
+      promise.then(()=>{
+        document.getElementById("addPageInput").focus()  
+      })      
     },
     addPage() {
       if (this.addPageModalTmp != "") {

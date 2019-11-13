@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="top">
-      <h1>scrapboxの複数ページをまとめて検索</h1>
+      <h1>scrapboxまとめて検索</h1>
     </div>
     <Container/>
   </div>
