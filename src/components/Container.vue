@@ -56,15 +56,6 @@ export default {
   },
   mounted() {
     this.$ga.page('/')
-    const title = "scrapboxまとめて検索"
-    const description = "scrapboxの複数ページを同時にまとめて検索できるサービスです。"
-    document.title = title
-    document.querySelector("meta[property='og:title']")
-      .setAttribute('content', title)
-    document.querySelector("meta[name='description']")
-      .setAttribute('content', description)
-    document.querySelector("meta[property='og:description']")
-      .setAttribute('content', description)
   },
   methods: {
     request() {
@@ -205,6 +196,11 @@ a {
   border-radius: 3px;
   padding: 0.5rem;
   margin: 0.1rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .active {
