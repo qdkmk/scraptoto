@@ -54,8 +54,17 @@ export default {
       }
     }
   },
-  mounted(){
+  mounted() {
     this.$ga.page('/')
+    const title = "scrapboxまとめて検索"
+    const description = "scrapboxの複数ページを同時にまとめて検索できるサービスです。"
+    document.title = title
+    document.querySelector("meta[property='og:title']")
+      .setAttribute('content', title)
+    document.querySelector("meta[name='description']")
+      .setAttribute('content', description)
+    document.querySelector("meta[property='og:description']")
+      .setAttribute('content', description)
   },
   methods: {
     request() {
@@ -79,14 +88,16 @@ export default {
         }
       }
     },
-    addPageModalToggle(){
+    addPageModalToggle() {
       let promise = new Promise((resolve) => { // #1
         this.addPageModal = !this.addPageModal
         resolve()
       })
-      promise.then(()=>{
-        document.getElementById("addPageInput").focus()  
-      })      
+      promise.then(() => {
+        if (this.addPageModal) {
+          document.getElementById("addPageInput").focus()
+        }
+      })
     },
     addPage() {
       if (this.addPageModalTmp != "") {
@@ -156,6 +167,7 @@ a {
   font-size: 1em;
   padding: 0.4em 0.8em;
   width: 70%;
+  font-size: 1.2rem;
 }
 
 .input:focus {
@@ -178,6 +190,7 @@ a {
   padding: 0.6em;
   text-decoration: none;
   border-radius: 3px;
+  font-size: 1.2rem;
 }
 
 .targetPagesListWrapper {
