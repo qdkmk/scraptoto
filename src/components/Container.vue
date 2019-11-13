@@ -15,7 +15,7 @@
     </form>
   </div>
 
-  
+
   <form name="search" class="search-form" @submit.prevent="request">
     <input class="input" type="text" v-model="boxword" placeholder="検索ワードを入力してください。">
     <button class="submit" type="submit">Go</button>
@@ -45,14 +45,17 @@ export default {
     }
   },
   computed: {},
-  created(){
+  created() {
     //setTargetPages
-    if(localStorage.getItem("targetPages")){
+    if (localStorage.getItem("targetPages")) {
       let localdata = JSON.parse(localStorage.getItem("targetPages"))
-      for (let l of localdata){
+      for (let l of localdata) {
         this.targetPages.push(l)
       }
     }
+  },
+  mounted(){
+    this.$ga.page('/')
   },
   methods: {
     request() {
@@ -77,14 +80,14 @@ export default {
       }
     },
     addPage() {
-      if(this.addPageModalTmp!=""){
+      if (this.addPageModalTmp != "") {
         this.targetPages.push({
           targetPageName: this.addPageModalTmp,
           active: true,
           items: {}
         })
         this.addPageModal = !this.addPageModal
-        this.addPageModalTmp=""
+        this.addPageModalTmp = ""
         localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
       }
     },
@@ -97,6 +100,7 @@ export default {
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0.1rem;
 }
 
 li {
@@ -108,7 +112,8 @@ a {
   text-decoration: none;
   color: #000;
 }
-.add-form{
+
+.add-form {
   width: 50%;
   margin: auto;
   margin-bottom: 2rem;
@@ -120,9 +125,10 @@ a {
 }
 
 @media screen and (max-width: 480px) {
-  .add-form{
+  .add-form {
     width: 100%
   }
+
   .search-form {
     width: 100%
   }
@@ -176,6 +182,7 @@ a {
   color: #fff;
   border-radius: 3px;
   padding: 0.5rem;
+  margin: 0.1rem;
 }
 
 .active {
@@ -183,12 +190,12 @@ a {
 }
 
 .targetPageListAdd {
-  background-color: #919191;
+  background-color: #42b983;
   color: #fff;
   border-radius: 3px;
   padding: 0.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
 }
 
 .pageWrapper {}

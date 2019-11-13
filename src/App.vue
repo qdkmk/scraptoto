@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="top">
+      <h1>scrapboxの複数ページをまとめて検索</h1>
+    </div>
+    <Container/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Container from './components/Container.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Container
   }
 }
 </script>
@@ -26,5 +28,8 @@ body{
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   text-align: center;
+}
+.top{
+  padding: 2rem;
 }
 </style>
