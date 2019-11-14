@@ -83,7 +83,8 @@ a {
 }
 .content-descriptions{
   line-height: 1.8;
-  font-size: 0.8rem
+  font-size: 0.8rem;
+  word-break:break-all;
 }
 @media screen and (max-width: 480px) {
   .content-image-wrapper{
