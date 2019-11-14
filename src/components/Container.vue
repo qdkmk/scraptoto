@@ -15,10 +15,10 @@
       <button class="submit" type="submit">Add</button>
     </form>
   </div>
-  
+
   <div v-show="deletePageModal" class="targetPagesListWrapper">
-    <ul  v-for="targetPage in targetPages" :key="targetPage.targetPageName">
-        <li class="DeletePageList" v-on:click="deletePage(targetPage.targetPageName)" >削除：{{targetPage.targetPageName}}</li>
+    <ul v-for="targetPage in targetPages" :key="targetPage.targetPageName">
+      <li class="DeletePageList" v-on:click="deletePage(targetPage.targetPageName)">削除：{{targetPage.targetPageName}}</li>
     </ul>
   </div>
 
@@ -48,7 +48,7 @@ export default {
       targetPages: [],
       boxword: "",
       addPageModal: false,
-      deletePageModal:false,
+      deletePageModal: false,
       addPageModalTmp: "",
     }
   },
@@ -66,69 +66,105 @@ export default {
     this.$ga.page('/')
   },
   methods: {
+    isEmpty(val) {
+      if (!val) {
+        if (val !== 0 && val !== false) {
+          return true;
+        }
+      } else if (typeof val == "object") {
+        return Object.keys(val).length === 0;
+      }
+      return false;
+    },
     request() {
       document.activeElement.blur()
-      for (let t of this.targetPages) {
-        t.items = {}
-        if (t.active === true) {
-          this.$axios.get('/hello', {
-              params: {
-                pages: t.targetPageName,
-                searchword: this.boxword
-              },
+      if (this.isEmpty(this.targetPages)) {
+          this.$toasted.error('Error! まずはprojectを「+」ボタンから登録してください', {
+            position: "bottom-center",
+            duration: 7000
+          })
+        } else {
+          for (let t of this.targetPages) {
+            t.items = {}
+            if (t.active === true) {
+              this.$axios.get('/hello', {
+                  params: {
+                    pages: t.targetPageName,
+                    searchword: this.boxword
+                  }
+                })
+                .then((res) => {
+                  let pageitems = {
+                    pagename: t.targetPageName,
+                    contents: res.data.message.pages
+                  }
+                  t.items = pageitems
+                }).catch((error) => {
+                  if (error.response) {
+                    this.$toasted.error(
+                      'Error! project名を確認してください:' + t.targetPageName + ',' + error.response.status, {
+                        position: "bottom-center",
+                        duration: 7000
+                      })
+                  } else if (error.request) {
+                    this.$toasted.error('Error! project名を確認してください:' + t.targetPageName + ',' + error.message, {
+                      position: "bottom-center",
+                      duration: 7000
+                    })
+                  } else {
+                    this.$toasted.error('Error! project名を確認してください:' + t.targetPageName + ',' + error.config, {
+                      position: "bottom-center",
+                      duration: 7000
+                    })
+                  }
+                })
+            }
+          }
+
+        }
+      },
+      addPageModalToggle() {
+          let promise = new Promise((resolve) => { // #1
+            this.addPageModal = !this.addPageModal
+            resolve()
+          })
+          promise.then(() => {
+            if (this.addPageModal) {
+              this.deletePageModal = false
+              document.getElementById("addPageInput").focus()
+            }
+          })
+        },
+        deletePageModalToggle() {
+          if (this.deletePageModal) {
+            this.deletePageModal = false
+          } else {
+            this.deletePageModal = true
+            this.addPageModal = false
+          }
+        },
+        addPage() {
+          if (this.addPageModalTmp != "") {
+            this.targetPages.push({
+              targetPageName: this.addPageModalTmp,
+              active: true,
+              items: {}
             })
-            .then(function(res) {
-              let pageitems = {
-                pagename: t.targetPageName,
-                contents: res.data.message.pages
-              }
-              t.items = pageitems
-            });
+            this.addPageModal = !this.addPageModal
+            this.addPageModalTmp = ""
+            localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
+          }
+        },
+        deletePage(pageName) {
+          this.targetPages.some((element, index) => {
+            if (element.targetPageName == pageName) {
+              this.targetPages.splice(index, 1)
+            }
+          })
+          localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
         }
-      }
-    },
-    addPageModalToggle() {
-      let promise = new Promise((resolve) => { // #1
-        this.addPageModal = !this.addPageModal
-        resolve()
-      })
-      promise.then(() => {
-        if (this.addPageModal) {
-          this.deletePageModal=false
-          document.getElementById("addPageInput").focus()
-        }
-      })
-    },
-    deletePageModalToggle(){
-      if(this.deletePageModal){
-        this.deletePageModal=false
-      }else{
-        this.deletePageModal=true
-        this.addPageModal=false
-      }
-    },
-    addPage() {
-      if (this.addPageModalTmp != "") {
-        this.targetPages.push({
-          targetPageName: this.addPageModalTmp,
-          active: true,
-          items: {}
-        })
-        this.addPageModal = !this.addPageModal
-        this.addPageModalTmp = ""
-        localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
-      }
-    },
-    deletePage(pageName){
-      this.targetPages.some((element,index)=>{
-        if(element.targetPageName==pageName){
-          this.targetPages.splice(index,1)
-        }
-      })
-      localStorage.setItem("targetPages", JSON.stringify(this.targetPages))
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -240,7 +276,8 @@ a {
   margin-top: 0.1rem;
   margin-bottom: 0.1rem;
 }
-.targetPageListDelete{
+
+.targetPageListDelete {
   background-color: #919191;
   color: #fff;
   border-radius: 3px;
@@ -248,7 +285,8 @@ a {
   margin-top: 0.1rem;
   margin-bottom: 0.1rem;
 }
-.DeletePageList{
+
+.DeletePageList {
   background-color: #b94242;
   color: #fff;
   border-radius: 3px;
